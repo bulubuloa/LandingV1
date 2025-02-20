@@ -1,0 +1,71 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Deploy a new version to Internal Testing"
+  lane :internal do
+    previous_build_number = google_play_track_version_codes(
+      package_name: "com.hoangquach.landingv1",
+      track: "internal",
+      json_key: "auth/landingv1-ecda8f5b81f5.json",
+    )[0]
+    UI.message("Latest version is #{previous_build_number}");
+    current_build_number = previous_build_number + 1
+    current_build_name = Time.now.strftime("%Y.%m.%d")
+
+    UI.message("Set version to name #{current_build_name} code: #{current_build_number}");
+    android_set_version_name(
+      version_name: current_build_name,
+      gradle_file: "LandingV1/app/build.gradle.kts" # optional
+    )
+
+    android_set_version_code(
+      version_code: current_build_number, # optional, if not specified, Version Code will be incremented
+      gradle_file: "LandingV1/app/build.gradle.kts" # optional
+    )
+
+    UI.message(ENV['PWD'])
+    keystore_path = ENV['PWD'] + "/auth/hoangquach_2025"
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "LandingV1",
+      properties: {
+        "android.injected.signing.store.file" => keystore_path,
+        "android.injected.signing.store.password" => "quachhoang1",
+        "android.injected.signing.key.alias" => "quachhoang",
+        "android.injected.signing.key.password" => "quachhoang1",
+      }
+    )
+
+    upload_to_play_store(
+      aab: "./LandingV1/app/build/outputs/bundle/release/app-release.aab", # Upload an AAB (App Bundle)
+      track: "internal", # Specify Internal Testing track
+      skip_upload_apk: true,
+      release_status: "draft"
+    )
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :playstore do
+    gradle(
+      task: 'bundle',
+      build_type: 'Release'
+    )
+    upload_to_play_store()
+  end
+end
