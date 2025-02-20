@@ -28,7 +28,7 @@ jobs:
           echo -n "$KEY_SIGN_STORE" | base64 --decode -o $ANDROID_KEYSTORE_PATH
 
           # import google auth
-          echo -n "$GOOGLE_PLAY_JSON_AUTH" -o $GOOGLE_PLAY_AUTH_PATH
+          echo "$GOOGLE_PLAY_JSON_AUTH" > $GOOGLE_PLAY_AUTH_PATH
           
           # apply keystore
           cp $ANDROID_KEYSTORE_PATH ./auth
