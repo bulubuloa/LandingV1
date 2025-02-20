@@ -21,7 +21,7 @@ platform :android do
     previous_build_number = google_play_track_version_codes(
       package_name: "com.hoangquach.landingv1",
       track: "internal",
-      json_key: "auth/landingv1-ecda8f5b81f5.json",
+      json_key: "auth/google_play_auth.json",
     )[0]
     UI.message("Latest version is #{previous_build_number}");
     current_build_number = previous_build_number + 1
@@ -39,16 +39,16 @@ platform :android do
     )
 
     UI.message(ENV['PWD'])
-    keystore_path = ENV['PWD'] + "/auth/hoangquach_2025"
+    keystore_path = ENV['PWD'] + "/auth/android_sign_store.keystore"
     gradle(
       task: "bundle",
       build_type: "Release",
       project_dir: "LandingV1",
       properties: {
         "android.injected.signing.store.file" => keystore_path,
-        "android.injected.signing.store.password" => "quachhoang1",
-        "android.injected.signing.key.alias" => "quachhoang",
-        "android.injected.signing.key.password" => "quachhoang1",
+        "android.injected.signing.store.password" => ENV["KEY_SIGN_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEYSIGN_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_SIGN_PASSWORD"],
       }
     )
 

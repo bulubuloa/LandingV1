@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             LandingV1Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Android 2",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
