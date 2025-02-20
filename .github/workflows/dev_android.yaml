@@ -20,9 +20,6 @@ jobs:
           KEY_SIGN_STORE: ${{ secrets.KEY_SIGN_STORE }}
           GOOGLE_PLAY_JSON_AUTH: ${{ secrets.GOOGLE_PLAY_JSON_AUTH }}
         run: |
-          ls -a
-          pwd
-
           # create variables
           ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/android_sign_store.keystore
           GOOGLE_PLAY_AUTH_PATH=$RUNNER_TEMP/google_play_auth.json
@@ -34,10 +31,9 @@ jobs:
           echo "$GOOGLE_PLAY_JSON_AUTH" > $GOOGLE_PLAY_AUTH_PATH
           
           # apply keystore
-          cp $ANDROID_KEYSTORE_PATH ./auth
-          cp $GOOGLE_PLAY_AUTH_PATH ./auth
-          cd ./auth
-          
+          mkdir auth
+          cp $ANDROID_KEYSTORE_PATH auth
+          cp $GOOGLE_PLAY_AUTH_PATH auth          
 
       - name: Build AAB with Fastlane
         run: fastlane android internal
