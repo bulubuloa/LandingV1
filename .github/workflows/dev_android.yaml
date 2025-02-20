@@ -33,6 +33,9 @@ jobs:
           # apply keystore
           cp $ANDROID_KEYSTORE_PATH ./auth
           cp $GOOGLE_PLAY_AUTH_PATH ./auth
+          cd ./auth
+          ls -a
+          pwd
 
       - name: Build AAB with Fastlane
         run: fastlane android internal
